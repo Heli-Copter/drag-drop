@@ -36,8 +36,9 @@ let drag = {
 
 let omu = (evt) => {
     mockData.map((data, key) => {
-        if (evt.screenY >= mockData[key].start && evt.screenY <= mockData[key].end) {
+        if (evt.clientY >= mockData[key].start && evt.clientY <= mockData[key].end) {
             drag.finish = key;
+            console.log(`draged ${drag.start} to ${drag.finish}`);
             drag = {
                 start: '',
                 finish: ''
@@ -51,10 +52,12 @@ let omd = (evt) => {
         let position = document.getElementById(data.id).getBoundingClientRect();
         mockData[key].start = position.y;
         mockData[key].end = position.y + position.height;
-        if (evt.screenY >= position.y && evt.screenY <= position.y + position.height) {
+//        console.log('***', evt.screenY, evt.clientY, document.getElementById(data.id).offsetTop);
+        if (evt.clientY >= position.y && evt.clientY <= position.y + position.height) {
             drag.start = key;
         }
     });
+    return false;
 };
 
 let omm = (evt) => {
@@ -66,18 +69,20 @@ const markup = (
         {
             mockData.map((data, key) => {
                 return (
-                    <div
-                        id={data.id}
-                        className='employee'
-                        key={key}
-                        onMouseUp={omu}
-                        onMouseDown={omd}
-                        onMouseMove={omm}
+                    <div id={data.id}
+                         className='employee'
+                         key={key}
+                         onMouseUp={omu}
+                         onMouseMove={omm}
                     >
                         <div>{data.name}</div>
                         <div>{data.designation}</div>
                         <div>{data.class}</div>
-                        <div className='sign'>|||</div>
+                        <div
+                            className='sign'
+                            onMouseDown={omd}
+                        >|||
+                        </div>
                     </div>
                 )
             })
